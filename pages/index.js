@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import styled from 'styled-components'
 import { useState } from 'react'
+import Center from '../components/center'
 
 const Square = styled.div`
   width: 3rem;
@@ -15,12 +16,13 @@ const BoardContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
 
-  width: ${ props => props.big ? '27rem' : '9rem' };
+  width: ${ props => props.big ? 'calc(30rem + 16px)' : 'calc(9rem + 4px)' };
+  height: ${ props => props.big ? 'calc(30rem + 16px)' : 'calc(9rem + 4px)' };
   text-align: center;
 
   background-color: ${props => props.state == 1 ? '#00000010' : props.state == 2 ? '#00000050' : 'white'};
 
-  padding: 0.5rem;
+  padding: ${ props => props.big ? '0rem' : '0.5rem' };
 
   border: 0px solid black;
 
@@ -105,14 +107,17 @@ function LocalBoard(props) {
 function GlobalBoard(props) {
   const [board, msg, open, player, handleClick] = useUltimateTicTacToeLogic([["", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", ""]], "X")
   return (
-    <div>
-      <BoardContainer big>
-        {board.map((value, index) => (
-          <LocalBoard id={index} changeFunction={handleClick} board={value} open={open == index || open == 9} key={index} player={player} />
-        ))}
-      </BoardContainer>
-      <Msg>{msg}</Msg>
-    </div>
+    <Center>
+      <div>
+        <BoardContainer big>
+          {board.map((value, index) => (
+            <LocalBoard id={index} changeFunction={handleClick} board={value} open={open == index || open == 9} key={index} player={player} />
+          ))}
+        </BoardContainer>
+        <br />
+        <Msg>{msg}</Msg>
+      </div>
+    </Center>
   )
 }
 

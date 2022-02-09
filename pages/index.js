@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import { useState } from 'react'
 import Center from '../components/center'
 
+const key = { 'X': 'X', 'O': 'O', 'x': 'X', 'o': 'O', 'f': '', 'F': '', '': '', ' ':''}
+
 const Square = styled.div`
   width: 3rem;
   height: 3rem;
@@ -25,6 +27,8 @@ const BoardContainer = styled.div`
   padding: ${ props => props.big ? '0rem' : '0.5rem' };
 
   border: 0px solid black;
+
+  position: relative;
 
 
   div:nth-child(1) {
@@ -68,6 +72,20 @@ const BoardContainer = styled.div`
   }
 `
 
+const Overlay = styled.p`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+
+  margin: 0;
+
+  font-size: 10rem;
+  font-weight: 300;
+  opacity: 0.6;
+`
+
 const Msg = styled.p`
   font-size: 1.5rem;
   text-align: center;
@@ -100,18 +118,19 @@ function LocalBoard(props) {
       {board.map((value, index) => (
         <Square onClick={onClick} id={index} key={index}>{value}</Square>
       ))}
+      <Overlay>{props.winner}</Overlay>
     </BoardContainer>
   )
 }
 
 function GlobalBoard(props) {
-  const [board, msg, open, player, handleClick] = useUltimateTicTacToeLogic([["", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", ""]], "X")
+  const [board, msg, open, player, handleClick, winners] = useUltimateTicTacToeLogic([["", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", ""]], "X")
   return (
     <Center>
       <div>
         <BoardContainer big>
           {board.map((value, index) => (
-            <LocalBoard id={index} changeFunction={handleClick} board={value} open={open == index || open == 9} key={index} player={player} />
+            <LocalBoard id={index} winner={key[winners[index]]} changeFunction={handleClick} board={value} open={open == index || open == 9} key={index} player={player} />
           ))}
         </BoardContainer>
         <br />
@@ -187,7 +206,7 @@ function useUltimateTicTacToeLogic(startBoard, startPlayer) {
     setState(stateCopy)
   }
 
-  return [state.board, state.msg, state.open, state.player, handleChange]
+  return [state.board, state.msg, state.open, state.player, handleChange, state.boardStatus]
 }
 
 function hasWon(board) {
